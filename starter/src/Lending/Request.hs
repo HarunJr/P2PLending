@@ -140,7 +140,7 @@ validateCancelRequest cParam dat ctx =
 
 validateLendRequest :: ContractParam -> RequestDatum -> Contexts.ScriptContext -> Bool
 validateLendRequest cParam dat ctx =
-  traceIfFalse "signedByBorrower: Wrong pubkeyhash" signedByLender &&
+  -- traceIfFalse "signedByBorrower: Wrong pubkeyhash" signedByLender &&
   traceIfFalse "deadlinePassed: Deadline not yet reached"  deadlinePassed &&
   traceIfFalse "containsRequiredCollateralAmount: Not Required Collateral Amount"  containsRequiredCollateralAmount &&
   traceIfFalse "validateBurn: Borrower NFT not burned" validateMint 
@@ -150,9 +150,6 @@ validateLendRequest cParam dat ctx =
 
     deadlinePassed :: Bool
     deadlinePassed = LedgerIntervalV1.contains (LedgerIntervalV1.from (requestExpiration dat)) (Contexts.txInfoValidRange txinfo)
-
-    signedByBorrower :: Bool
-    signedByBorrower = Contexts.txSignedBy txinfo $ Ledger.unPaymentPubKeyHash (borrower dat)
 
     validateMint :: Bool
     validateMint = case ValueV1.flattenValue $ Contexts.txInfoMint txinfo of
